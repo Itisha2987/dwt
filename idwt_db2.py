@@ -5,19 +5,10 @@ import math
 import cv2
 
 def upscale(image, scale_row, scale_col):
-    upscaled_img = []
-    if scale_row != 1:
-        for i in range(len(image)):
-            upscaled_img.append(image[i])
-            upscaled_img.append(np.zeros(len(image[0])))
-        return upscaled_img
-    elif scale_col != 1:
-        image = np.transpose(image)
-        for i in range(len(image)):
-            upscaled_img.append(image[i])
-            upscaled_img.append(np.zeros(len(image[0])))
-        np.transpose(upscaled_img)
-        return upscaled_img
+    axis = 1 if scale_row == 1 else 0
+    def pad(m):
+        return np.insert(m, m.size, 0)
+    return np.apply_along_axis(lambda m: pad(m), axis=axis, arr=image)
 
 
 def row_wise_convolve(image, filterr):
